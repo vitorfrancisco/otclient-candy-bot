@@ -110,7 +110,9 @@ end
 
 function AutoTarget.isValidTarget(creature)
   local player = g_game.getLocalPlayer()
-  return TargetsModule.hasTarget(creature:getName()) and player:canStandBy(creature)
+  local playerPos = player:getPosition()
+  local d = Position.distance(playerPos, creature:getPosition())
+  return d < 7 and TargetsModule.hasTarget(creature:getName()) and player:canStandBy(creature)
 end
 
 function AutoTarget.getBestTarget()
@@ -122,7 +124,7 @@ function AutoTarget.getBestTarget()
     if t and AutoTarget.isValidTarget(t) then
       local d = Position.distance(playerPos, t:getPosition())
       if not target or d < distance then
-        BotLogger.debug("AutoTarget: Found closest target")
+        BotLogger.debug("AutoTarget: Found closest target", distance)
         target = t
         distance = d
       end
